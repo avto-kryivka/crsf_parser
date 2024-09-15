@@ -73,7 +73,10 @@ class CRSFParser:
                         # print(input)
                         data = input[: size + extra_data]
                         # print(data, len(data))
-                        content = crsf_frame.parse(data)
+                        if size > 0:
+                            content = crsf_frame.parse(data)
+                        else:
+                            content = None
                         del input[: size + extra_data]
                         # print(input)
                         packet_crc = content.CRC
@@ -89,8 +92,10 @@ class CRSFParser:
                         continue
                     else:
                         self._stats.invalid_frames += 1
+                        print(f"invalid packet: {input.hex(' ')}")
                 else:
                     self._stats.framing_errors += 1
+                    print(f"frame error: {input.hex(' ')}")
                 del input[0]
         except IndexError:
             return

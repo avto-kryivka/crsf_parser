@@ -5,6 +5,9 @@ from .payloads import (
     payload_heartbeat,
     payload_link_statistics,
     payload_rc_channels_packed,
+    payload_attitude,
+    payload_flight_mode,
+    payload_baro_alititude
 )
 
 SYNC_BYTE_BIN_STRING = b"\xc8"
@@ -29,6 +32,9 @@ crsf_frame = Struct(
             PacketsTypes.BATTERY_SENSOR: payload_battery_sensor,
             PacketsTypes.LINK_STATISTICS: payload_link_statistics,
             PacketsTypes.RC_CHANNELS_PACKED: payload_rc_channels_packed,
+            PacketsTypes.ATTITUDE: payload_attitude,
+            PacketsTypes.FLIGHT_MODE: payload_flight_mode,
+            PacketsTypes.BARO_ALTITUDE: payload_baro_alititude,
         },
         default=Array(this.frame_length - 2, Byte),
     ),

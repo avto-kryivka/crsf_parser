@@ -15,30 +15,37 @@ from construct.core import Struct
 class PacketsTypes(Enum):
     GPS = 0x02
     BATTERY_SENSOR = 0x08
+    BARO_ALTITUDE = 0x09
     HEARTBEAT = 0x0B
     VIDEO_TRANSMITTER = 0x0F
     LINK_STATISTICS = 0x14
     RC_CHANNELS_PACKED = 0x16
     ATTITUDE = 0x1E
+    FLIGHT_MODE = 0x21
 
 
 PAYLOADS_SIZE: "dict[int, int]" = {
     PacketsTypes.GPS: 15,
     PacketsTypes.BATTERY_SENSOR: 8,
-    PacketsTypes.HEARTBEAT: 1,
+    PacketsTypes.HEARTBEAT: 2,
+    PacketsTypes.BARO_ALTITUDE: 3,
     PacketsTypes.VIDEO_TRANSMITTER: 6,
     PacketsTypes.LINK_STATISTICS: 10,
     PacketsTypes.RC_CHANNELS_PACKED: 22,
     PacketsTypes.ATTITUDE: 6,
+    PacketsTypes.FLIGHT_MODE: 6
 }
 
-payload_heartbeat = Struct("origin_device_address" / Int8ub)
+payload_heartbeat = Struct("origin_device_address" / Int16ub)
 
 
 payload_battery_sensor = Struct(
     "voltage" / Int16ub, "current" / Int16ub, "capacity" / Int24ub, "remaining" / Int8ub
 )
 
+payload_attitude = Struct(
+    "pitch angle" / Int16ub, "roll" / Int16ub, "yaw" / Int16ub
+)
 
 payload_link_statistics = Struct(
     "uplink_rssi_ant_1" / Int8ub,
@@ -66,3 +73,7 @@ payload_link_statistics = Struct(
 payload_rc_channels_packed = ByteSwapped(
     BitStruct("channels" / Array(16, BitsInteger(11)))
 )
+
+payload_flight_mode = Struct("flight_mode" / Array(6, Int8ub))
+
+payload_baro_alititude = Struct("altitude" / Int16ub, "vertical_speed" / Int8ub)
